@@ -18,9 +18,9 @@ const NET_CONFIGS = {
     },
     intranet: {
         label: '内网',
-        broker: 'mqtt://192.168.1.100:1883',
-        username: 'admin',
-        password: 'public'
+        broker: 'mqtt://192.168.199.219:1883',
+        username: '',
+        password: ''
     }
 };
 
