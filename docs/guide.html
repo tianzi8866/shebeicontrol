@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TCT_100 使用指南 — 快速上手、按键操作、串口命令、MQTT远程控制">
+    <title>使用指南 — TCT_100 化工控制实训装置</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ═══════════ 导航栏 ═══════════ -->
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+            <div class="logo-icon">⚗</div>
+            TCT_100
+        </a>
+        <button class="nav-toggle" id="navToggle" aria-label="菜单">☰</button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">产品说明</a></li>
+            <li><a href="specs.html">技术规格</a></li>
+            <li><a href="guide.html" class="active">使用指南</a></li>
+            <li><a href="about.html">关于项目</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ═══════════ 面包屑 ═══════════ -->
+<div class="breadcrumb">
+    <a href="index.html">首页</a> <span>›</span> 使用指南
+</div>
+
+<!-- ═══════════ Hero ═══════════ -->
+<header class="hero" style="padding: 48px 24px;">
+    <div class="hero-content">
+        <div class="hero-badge">User Guide</div>
+        <h1>使用<span>指南</span></h1>
+        <p>从开机到远程控制，完整的 TCT_100 操作手册</p>
+    </div>
+</header>
+
+<!-- ═══════════ 快速上手 ═══════════ -->
+<section class="page-section" id="quickstart">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>快速上手</h2>
+            <p>5 分钟让 TCT_100 运转起来</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <h4>第1步：上电启动</h4>
+                <p>通过 USB-C 接口供电（5V/1A），装置自动启动。RGB 灯执行开机动画（七彩循环 + 呼吸灯），OLED 显示 "Starting..."。</p>
+            </div>
+            <div class="timeline-item">
+                <h4>第2步：WiFi 配网</h4>
+                <p>首次开机无保存凭据时自动进入配网模式。串口监视器（115200 baud）中列出扫描到的 WiFi 列表，输入序号选择网络，输入密码完成连接。凭据自动保存至 Flash，下次开机自动重连。</p>
+            </div>
+            <div class="timeline-item">
+                <h4>第3步：MQTT 连接</h4>
+                <p>WiFi 连接成功后，自动连接预设的 MQTT Broker (47.98.170.180:8081)。连接成功后订阅命令主题并上报初始状态。可通过串口命令 <code>mqtt show</code> 查看配置、<code>mqtt set</code> 修改参数。</p>
+            </div>
+            <div class="timeline-item">
+                <h4>第4步：合上总闸</h4>
+                <p>按下 <strong>KEY1</strong>（总闸开关），系统进入运行状态。默认自动模式，传感器开始采集数据，装置根据光照和温度自动控制灯光与风扇。</p>
+            </div>
+            <div class="timeline-item">
+                <h4>第5步：观察运行</h4>
+                <p>OLED 屏幕实时显示各项参数。RGB 灯根据系统状态自动切换颜色模式。可通过串口查看定期上报的传感器数据，或通过 MQTT 客户端远程监控。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ 按键操作 ═══════════ -->
+<section class="page-section alt" id="keys">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>按键操作说明</h2>
+            <p>两个物理按键实现全部本地控制</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon red">🔑</div>
+                <h3>KEY1 — 总闸开关</h3>
+                <p><strong>短按：</strong>切换总闸开/关状态。</p>
+                <p style="margin-top:8px;">总闸合上时强制进入<strong>自动模式</strong>，所有继电器复位为 00 状态。</p>
+                <p style="margin-top:8px;">总闸断开时所有继电器关闭，RGB 灯显示红灯常亮。</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon blue">🎛️</div>
+                <h3>KEY2 — 模式切换</h3>
+                <p><strong>长按 2 秒：</strong>切换自动/手动模式。</p>
+                <p style="margin-top:8px;"><strong>短按（手动模式）：</strong>循环切换继电器组合状态：</p>
+                <p style="margin-top:4px;">00 (全关) → 10 (灯亮) → 01 (风扇) → 11 (全开)</p>
+                <p style="margin-top:8px; color:var(--accent);">⚠️ 自动模式下短按无效</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ 串口命令 ═══════════ -->
+<section class="page-section" id="serial">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>串口命令参考</h2>
+            <p>通过 USB 串口 (115200 baud) 发送以下命令</p>
+        </div>
+
+        <table class="spec-table">
+            <thead>
+                <tr><th>命令</th><th>功能</th><th>示例</th></tr>
+            </thead>
+            <tbody>
+                <tr><td class="label">forget</td><td>清除保存的 WiFi 凭据并断开</td><td><code>forget</code></td></tr>
+                <tr><td class="label">reboot</td><td>重启设备（1秒后）</td><td><code>reboot</code></td></tr>
+                <tr><td class="label">rainbow</td><td>RGB 彩虹效果 5 秒（调试用）</td><td><code>rainbow</code></td></tr>
+                <tr><td class="label">mqtt show</td><td>打印当前 MQTT 配置</td><td><code>mqtt show</code></td></tr>
+                <tr><td class="label">mqtt set broker &lt;ip&gt;</td><td>修改 MQTT Broker 地址</td><td><code>mqtt set broker 192.168.1.100</code></td></tr>
+                <tr><td class="label">mqtt set port &lt;num&gt;</td><td>修改 MQTT 端口</td><td><code>mqtt set port 1883</code></td></tr>
+                <tr><td class="label">mqtt set user &lt;name&gt;</td><td>修改 MQTT 用户名</td><td><code>mqtt set user admin</code></td></tr>
+                <tr><td class="label">mqtt set pass &lt;pwd&gt;</td><td>修改 MQTT 密码</td><td><code>mqtt set pass 123456</code></td></tr>
+                <tr><td class="label">mqtt set devid &lt;id&gt;</td><td>修改设备 ID</td><td><code>mqtt set devid PCT100001</code></td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ═══════════ MQTT远程 ═══════════ -->
+<section class="page-section alt" id="mqtt">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>MQTT 远程控制</h2>
+            <p>通过 MQTT 客户端向设备下发 JSON 指令</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon blue">🔌</div>
+                <h3>控制继电器</h3>
+                <p>Topic: <code>chemctrl/{deviceId}/command</code></p>
+                <p style="margin-top:8px; background:#f8f9fa; padding:12px; border-radius:6px; font-family:monospace; font-size:0.82rem;">
+                    {"cmd":"set_relay","relay":3,"value":true}
+                </p>
+                <p style="margin-top:4px; font-size:0.85rem; color:var(--text-light);">relay=3 灯光, relay=4 风扇</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon green">🔄</div>
+                <h3>切换模式</h3>
+                <p style="margin-top:8px; background:#f8f9fa; padding:12px; border-radius:6px; font-family:monospace; font-size:0.82rem;">
+                    {"cmd":"set_mode","mode":"auto"}<br>
+                    {"cmd":"set_mode","mode":"manual"}
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon orange">📊</div>
+                <h3>查询状态 & 设阈值</h3>
+                <p style="margin-top:8px; background:#f8f9fa; padding:12px; border-radius:6px; font-family:monospace; font-size:0.82rem;">
+                    {"cmd":"get_status"}<br>
+                    {"cmd":"set_threshold","temp":32.0,"light":200}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ 模式对比 ═══════════ -->
+<section class="page-section" id="modes">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>自动模式 vs 手动模式</h2>
+        </div>
+        <table class="spec-table">
+            <thead>
+                <tr><th>特性</th><th>自动模式</th><th>手动模式</th></tr>
+            </thead>
+            <tbody>
+                <tr><td class="label">继电器控制</td><td>传感器数据自动决策</td><td>按键/MQTT 手动切换</td></tr>
+                <tr><td class="label">KEY2 短按</td><td>无效（提示信息）</td><td>循环切换 4 种组合</td></tr>
+                <tr><td class="label">传感器阈值</td><td>生效（滞回控制）</td><td>不生效</td></tr>
+                <tr><td class="label">MQTT 控制</td><td>仅 set_mode/get_status</td><td>完整控制权限</td></tr>
+                <tr><td class="label">RGB 灯</td><td>根据传感器告警变色</td><td>继电器状态决定颜色</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ═══════════ 页脚 ═══════════ -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h4>TCT_100 化工控制实训装置</h4>
+            <p>完整操作文档请参考本页面</p>
+            <p>固件版本: V1.0.0</p>
+        </div>
+        <div class="footer-col">
+            <h4>快速链接</h4>
+            <a href="index.html">产品说明</a>
+            <a href="specs.html">技术规格</a>
+            <a href="guide.html">使用指南</a>
+            <a href="about.html">关于项目</a>
+        </div>
+        <div class="footer-col">
+            <h4>串口参数</h4>
+            <p>波特率: 115200</p>
+            <p>终止符: \\n (换行)</p>
+            <p>编码: UTF-8</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 TCT_100 Project · 化工控制实训装置
+    </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

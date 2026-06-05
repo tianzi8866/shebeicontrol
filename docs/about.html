@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="关于 TCT_100 项目 — 项目背景、技术栈、多线程架构设计">
+    <title>关于项目 — TCT_100 化工控制实训装置</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 额外页面特有样式 */
+        .arch-diagram {
+            background: #f8fafb;
+            border-radius: var(--radius);
+            padding: 32px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 0.9rem;
+            line-height: 2;
+            border: 1px solid var(--border);
+        }
+        .arch-box {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            margin: 4px;
+            font-weight: 600;
+        }
+        .arch-box.main  { background: #e74c3c; color: #fff; }
+        .arch-box.task1 { background: #3498db; color: #fff; }
+        .arch-box.task2 { background: #1abc9c; color: #fff; }
+        .arch-arrow { color: #7f8c8d; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════ 导航栏 ═══════════ -->
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+            <div class="logo-icon">⚗</div>
+            TCT_100
+        </a>
+        <button class="nav-toggle" id="navToggle" aria-label="菜单">☰</button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">产品说明</a></li>
+            <li><a href="specs.html">技术规格</a></li>
+            <li><a href="guide.html">使用指南</a></li>
+            <li><a href="about.html" class="active">关于项目</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ═══════════ 面包屑 ═══════════ -->
+<div class="breadcrumb">
+    <a href="index.html">首页</a> <span>›</span> 关于项目
+</div>
+
+<!-- ═══════════ Hero ═══════════ -->
+<header class="hero" style="padding: 48px 24px;">
+    <div class="hero-content">
+        <div class="hero-badge">About The Project</div>
+        <h1>关于<span>项目</span></h1>
+        <p>嵌入式软件开发实践课程 — 多线程编程与物联网综合实训</p>
+    </div>
+</header>
+
+<!-- ═══════════ 项目简介 ═══════════ -->
+<section class="page-section">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>项目背景</h2>
+            <p>化工控制实训装置的设计初衷与教学目标</p>
+        </div>
+
+        <div class="device-showcase">
+            <div class="device-info" style="grid-column: 1/-1;">
+                <p>TCT_100 化工控制实训装置是<strong>嵌入式软件开发实践课程</strong>的综合实训项目。项目以化工安全监控为应用场景，模拟化工厂中常见的环境参数监测与设备控制需求。</p>
+                <p style="margin-top:12px;">装置基于 <strong>ESP32-C3</strong>（RISC-V 架构）微控制器，集成多种传感器、执行器与通信模块，采用 <strong>FreeRTOS 多线程架构</strong>实现任务分离与优先级管理，通过 <strong>MQTT 协议</strong>实现物联网远程监控能力。</p>
+                <p style="margin-top:12px;">通过本项目，学生可以系统性地掌握：嵌入式 GPIO 编程、传感器驱动开发、实时操作系统 (RTOS) 多线程编程、WiFi 网络通信、MQTT 物联网协议、JSON 数据序列化、以及工业级控制逻辑设计。</p>
+
+                <div style="margin-top:24px; display:flex; gap:8px; flex-wrap:wrap;">
+                    <span class="tag tag-blue">ESP32-C3</span>
+                    <span class="tag tag-green">FreeRTOS</span>
+                    <span class="tag tag-orange">Arduino Framework</span>
+                    <span class="tag tag-red">MQTT</span>
+                    <span class="tag tag-blue">WiFi</span>
+                    <span class="tag tag-green">嵌入式开发</span>
+                    <span class="tag tag-orange">物联网</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ 多线程架构 ═══════════ -->
+<section class="page-section alt">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>FreeRTOS 多线程架构</h2>
+            <p>三线程分离设计，保证关键任务实时响应</p>
+        </div>
+
+        <div class="arch-diagram">
+            <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:12px;">优先级: 高 (1) → 低 (0)</p>
+            <div>
+                <span class="arch-box main">主线程 (优先级1)</span>
+                <p style="font-size:0.8rem; margin:4px 0;">按键 · 传感器 · 继电器 · OLED · 串口</p>
+            </div>
+            <div class="arch-arrow">│</div>
+            <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap;">
+                <div>
+                    <span class="arch-box task1">线程一 (优先级0)</span>
+                    <p style="font-size:0.8rem; margin:4px 0;">WiFi维护 + MQTT维护 + 消息发布</p>
+                </div>
+                <div>
+                    <span class="arch-box task2">线程二 (优先级0)</span>
+                    <p style="font-size:0.8rem; margin:4px 0;">多彩LED指示灯状态机</p>
+                </div>
+            </div>
+            <p style="font-size:0.78rem; color:var(--text-light); margin-top:16px;">
+                🔒 线程同步: portMUX_TYPE 互斥量保护 MQTT publish 操作<br>
+                📡 主线程写入共享状态 → LED线程只读 (ESP32 原子操作，无需锁)
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ 技术栈 ═══════════ -->
+<section class="page-section">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>技术栈与依赖</h2>
+            <p>项目使用的核心框架与第三方库</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon blue">🔧</div>
+                <h3>Arduino Framework</h3>
+                <p>基于 ESP32 Arduino Core 3.x，提供标准 Arduino API 与 ESP-IDF 底层能力。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon green">⏱️</div>
+                <h3>FreeRTOS</h3>
+                <p>ESP32-C3 原生集成。使用 xTaskCreate 创建独立线程，vTaskDelay 非阻塞延时，portMUX 互斥量同步。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon orange">📡</div>
+                <h3>PubSubClient</h3>
+                <p>轻量级 MQTT 客户端库，支持 QoS 0，15 秒 KeepAlive，JSON 消息体 (ArduinoJson)。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon purple">🌈</div>
+                <h3>Adafruit NeoPixel</h3>
+                <p>WS2812 单总线 RGB LED 驱动，24 位色深，支持 HSV 色彩空间与亮度调节。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon teal">🖥️</div>
+                <h3>U8g2 (SH1106)</h3>
+                <p>OLED 显示驱动库，I²C 接口，支持中文 GB2312 字库，128×64 分辨率。</p>
+            </div>
+            <div class="card">
+                <div class="card-icon red">🌡️</div>
+                <h3>DallasTemperature</h3>
+                <p>DS18B20 一线数字温度传感器驱动，支持异步温度转换，精度 ±0.5°C。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ 项目信息 ═══════════ -->
+<section class="page-section alt">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>项目信息</h2>
+        </div>
+        <table class="spec-table">
+            <tbody>
+                <tr><td class="label">项目名称</td><td>PCT_100_CTL 化工控制实训装置</td></tr>
+                <tr><td class="label">固件版本</td><td>V1.0.0</td></tr>
+                <tr><td class="label">设备 ID</td><td>PCT_100_017</td></tr>
+                <tr><td class="label">主控芯片</td><td>Espressif ESP32-C3 (RISC-V 32bit, 160MHz)</td></tr>
+                <tr><td class="label">开发框架</td><td>Arduino Core for ESP32 + FreeRTOS</td></tr>
+                <tr><td class="label">课程名称</td><td>嵌入式软件开发实践 — 多线程编程</td></tr>
+                <tr><td class="label">开发日期</td><td>2026-06-02</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ═══════════ 页脚 ═══════════ -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h4>TCT_100 化工控制实训装置</h4>
+            <p>嵌入式软件开发实践课程项目</p>
+            <p>基于 ESP32-C3 + FreeRTOS</p>
+        </div>
+        <div class="footer-col">
+            <h4>快速链接</h4>
+            <a href="index.html">产品说明</a>
+            <a href="specs.html">技术规格</a>
+            <a href="guide.html">使用指南</a>
+            <a href="about.html">关于项目</a>
+        </div>
+        <div class="footer-col">
+            <h4>相关资源</h4>
+            <p>MQTT Broker: 47.98.170.180:8081</p>
+            <p>ESP32 Arduino Core 3.x</p>
+            <p>FreeRTOS Kernel 10.x</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 TCT_100 Project · 嵌入式软件开发实践 · 化工控制实训装置
+    </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TCT_100 化工控制实训装置 — 集光照检测、温度监控、继电器控制、WiFi/MQTT通信于一体的嵌入式教学平台">
+    <title>TCT_100 化工控制实训装置 — 产品说明书</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ═══════════ 导航栏 ═══════════ -->
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+            <div class="logo-icon">⚗</div>
+            TCT_100
+        </a>
+        <button class="nav-toggle" id="navToggle" aria-label="菜单">☰</button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html" class="active">产品说明</a></li>
+            <li><a href="specs.html">技术规格</a></li>
+            <li><a href="guide.html">使用指南</a></li>
+            <li><a href="about.html">关于项目</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ═══════════ Hero ═══════════ -->
+<header class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">TCT_100 · PCT_100_CTL</div>
+        <h1>化工控制实训装置 <span>产品说明书</span></h1>
+        <p>一款面向嵌入式教学与化工安全实训的综合控制平台——集成光照传感器、温度传感器、继电器控制、RGB多彩指示灯、WiFi与MQTT远程通信功能。</p>
+        <div class="hero-buttons">
+            <a href="guide.html" class="btn btn-primary">📖 快速上手</a>
+            <a href="specs.html" class="btn btn-outline">📋 技术参数</a>
+            <a href="#overview" class="btn btn-outline">🔍 了解更多</a>
+        </div>
+    </div>
+</header>
+
+<!-- ═══════════ 装置概览 ═══════════ -->
+<section class="page-section" id="overview">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>装置概览</h2>
+            <p>TCT_100 是专为嵌入式开发与化工安全实训设计的综合实验平台</p>
+        </div>
+
+        <div class="device-showcase">
+            <!-- 设备示意图 -->
+            <div class="device-visual">
+                <svg class="device-svg" viewBox="0 0 260 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 外框 -->
+                    <rect x="30" y="10" width="200" height="280" rx="16" fill="#2c3e50" stroke="#1a3a4a" stroke-width="3"/>
+                    <!-- 屏幕 -->
+                    <rect x="55" y="30" width="150" height="80" rx="8" fill="#1a1a2e"/>
+                    <text x="130" y="60" text-anchor="middle" fill="#1abc9c" font-size="14" font-weight="bold">TCT_100</text>
+                    <text x="130" y="80" text-anchor="middle" fill="#ecf0f1" font-size="10">WiFi: 192.168.1.x</text>
+                    <text x="130" y="96" text-anchor="middle" fill="#bdc3c7" font-size="9">光照: 450 lm  温度: 26.5°C</text>
+                    <!-- RGB指示灯 -->
+                    <circle cx="100" cy="130" r="16" fill="#e74c3c"/>
+                    <text x="100" y="135" text-anchor="middle" fill="#fff" font-size="9">LED</text>
+                    <!-- 按键 -->
+                    <rect x="55" y="160" width="70" height="24" rx="4" fill="#7f8c8d"/>
+                    <text x="90" y="177" text-anchor="middle" fill="#fff" font-size="9">KEY1 总闸</text>
+                    <rect x="135" y="160" width="70" height="24" rx="4" fill="#7f8c8d"/>
+                    <text x="170" y="177" text-anchor="middle" fill="#fff" font-size="9">KEY2 模式</text>
+                    <!-- 传感器标注 -->
+                    <line x1="130" y1="200" x2="180" y2="200" stroke="#1abc9c" stroke-width="2"/>
+                    <circle cx="185" cy="200" r="10" fill="#1abc9c" opacity="0.3"/>
+                    <circle cx="185" cy="200" r="6" fill="#1abc9c"/>
+                    <text x="210" y="204" fill="#bdc3c7" font-size="9">光照</text>
+                    <line x1="130" y1="230" x2="170" y2="230" stroke="#e67e22" stroke-width="2"/>
+                    <circle cx="175" cy="230" r="10" fill="#e67e22" opacity="0.3"/>
+                    <circle cx="175" cy="230" r="6" fill="#e67e22"/>
+                    <text x="200" y="234" fill="#bdc3c7" font-size="9">温度</text>
+                    <!-- 继电器 -->
+                    <rect x="55" y="250" width="40" height="20" rx="3" fill="#e74c3c" opacity="0.8"/>
+                    <text x="75" y="264" text-anchor="middle" fill="#fff" font-size="7">灯</text>
+                    <rect x="105" y="250" width="40" height="20" rx="3" fill="#3498db" opacity="0.8"/>
+                    <text x="125" y="264" text-anchor="middle" fill="#fff" font-size="7">风扇</text>
+                    <!-- 引脚 -->
+                    <line x1="130" y1="290" x2="130" y2="300" stroke="#7f8c8d" stroke-width="2"/>
+                    <line x1="110" y1="290" x2="110" y2="300" stroke="#7f8c8d" stroke-width="2"/>
+                    <line x1="150" y1="290" x2="150" y2="300" stroke="#7f8c8d" stroke-width="2"/>
+                </svg>
+                <div class="device-label">TCT_100 正面示意图</div>
+            </div>
+
+            <!-- 装置说明 -->
+            <div class="device-info">
+                <h3>产品定位</h3>
+                <p>TCT_100 化工控制实训装置是一款基于 <strong>ESP32-C3</strong> 微控制器的嵌入式教学平台。它模拟化工场景中常见的安全监控需求，集成多种传感器与执行器，支持本地自动控制与远程 MQTT 通信。</p>
+                <p>学生通过本装置可掌握：</p>
+                <p>✅ 光照/温度传感器数据采集</p>
+                <p>✅ 继电器逻辑控制（灯光、风扇）</p>
+                <p>✅ RGB 多彩指示灯状态显示</p>
+                <p>✅ WiFi 联网与 MQTT 物联网通信</p>
+                <p>✅ FreeRTOS 多线程编程</p>
+                <p>✅ OLED 显示屏驱动与 UI 设计</p>
+                <div style="margin-top:20px;">
+                    <span class="tag tag-blue">ESP32-C3</span>
+                    <span class="tag tag-green">FreeRTOS</span>
+                    <span class="tag tag-orange">MQTT</span>
+                    <span class="tag tag-red">WiFi</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ 核心功能 ═══════════ -->
+<section class="page-section alt" id="features">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>六大核心功能</h2>
+            <p>覆盖传感器采集、自动控制、状态指示与远程通信的完整实训链路</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon blue">🌡️</div>
+                <h3>温度监控</h3>
+                <p>DS18B20 数字温度传感器，精度 ±0.5°C。支持动态设置上下限阈值，越界自动触发风扇控制，阈值持久化存储于 Flash。</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon orange">💡</div>
+                <h3>光照检测</h3>
+                <p>高精度光敏电阻 (LDR)，0~1000 lux 量程。自动判定光照强度，低于阈值自动开灯，高于阈值自动关灯，支持滞回控制。</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon green">🔌</div>
+                <h3>继电器控制</h3>
+                <p>双路继电器分别控制灯光与风扇。支持自动模式（传感器决策）与手动模式（按键/MQTT指令切换），4 种组合状态 (00/01/10/11)。</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon purple">🌈</div>
+                <h3>多彩LED指示</h3>
+                <p>Adafruit NeoPixel RGB 灯，6 种显示模式直观反映设备状态：严重警报、光照越界、温度越界、MQTT断开、WiFi断开、正常运行。</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon teal">📡</div>
+                <h3>WiFi + MQTT</h3>
+                <p>2.4GHz WiFi 联网，支持 Web 配网与凭据记忆。MQTT 协议远程上报状态（温度、光照、继电器、模式），接收云端控制指令。</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon red">🖥️</div>
+                <h3>OLED 显示屏</h3>
+                <p>128×64 SH1106 OLED 屏幕，中文显示。实时展示 WiFi IP、运行模式、传感器数值、阈值设定、灯光/风扇状态。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ LED警报模式 ═══════════ -->
+<section class="page-section" id="alarms">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>多彩LED 警报模式</h2>
+            <p>RGB 指示灯根据系统状态自动切换，直观反馈设备运行情况</p>
+        </div>
+
+        <div class="alert-demo">
+            <div class="alert-card severe">
+                <div class="alert-title">🔴 严重警报</div>
+                <div class="alert-desc">灯光开启 + 风扇运行 — 光照与温度同时越界</div>
+                <div class="led-pattern">
+                    <span class="led-dot r"></span><span class="led-label">100ms</span>
+                    <span class="led-dot off"></span><span class="led-label">50ms</span>
+                    <span class="led-dot r"></span><span class="led-label">100ms</span>
+                    <span class="led-dot off"></span><span class="led-label">50ms</span>
+                    <span class="led-dot g"></span><span class="led-label">100ms</span>
+                    <span class="led-dot off"></span><span class="led-label">50ms</span>
+                    <span class="led-dot b"></span><span class="led-label">100ms</span>
+                    <span class="led-dot off"></span><span class="led-label">350ms</span>
+                </div>
+            </div>
+
+            <div class="alert-card light">
+                <div class="alert-title">🟠 光照越界</div>
+                <div class="alert-desc">灯光开启，风扇停止 — 仅光照低于阈值</div>
+                <div class="led-pattern">
+                    <span class="led-dot r"></span><span class="led-label">300ms</span>
+                    <span class="led-dot off"></span><span class="led-label">200ms</span>
+                    <span class="led-dot g"></span><span class="led-label">300ms</span>
+                    <span class="led-dot off"></span><span class="led-label">200ms</span>
+                    <span class="led-dot b"></span><span class="led-label">300ms</span>
+                    <span class="led-dot off"></span><span class="led-label">200ms</span>
+                </div>
+            </div>
+
+            <div class="alert-card temp">
+                <div class="alert-title">🔵 温度越界</div>
+                <div class="alert-desc">灯光关闭，风扇运行 — 仅温度高于阈值</div>
+                <div class="led-pattern">
+                    <span class="led-dot r"></span><span class="led-label">500ms</span>
+                    <span class="led-dot g"></span><span class="led-label">500ms</span>
+                    <span class="led-dot b"></span><span class="led-label">500ms</span>
+                    <span class="led-dot off"></span><span class="led-label">700ms</span>
+                </div>
+            </div>
+
+            <div class="alert-card normal">
+                <div class="alert-title">🟢 一切正常</div>
+                <div class="alert-desc">无越界、无警报 — 慢速呼吸渐变效果</div>
+                <div class="led-pattern">
+                    <span class="led-dot off"></span><span class="led-label">→</span>
+                    <span class="led-dot r"></span><span class="led-label">1s</span>
+                    <span class="led-label">→</span>
+                    <span class="led-dot g"></span><span class="led-label">1s</span>
+                    <span class="led-label">→</span>
+                    <span class="led-dot b"></span><span class="led-label">1s</span>
+                    <span class="led-label">→</span>
+                    <span class="led-dot off"></span><span class="led-label">1.2s</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ 页脚 ═══════════ -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h4>TCT_100 化工控制实训装置</h4>
+            <p>版本: V1.0.0</p>
+            <p>型号: PCT_100_CTL</p>
+            <p>主控: ESP32-C3</p>
+        </div>
+        <div class="footer-col">
+            <h4>快速链接</h4>
+            <a href="index.html">产品说明</a>
+            <a href="specs.html">技术规格</a>
+            <a href="guide.html">使用指南</a>
+            <a href="about.html">关于项目</a>
+        </div>
+        <div class="footer-col">
+            <h4>技术支持</h4>
+            <p>MQTT Broker: 47.98.170.180:8081</p>
+            <p>协议: chemctrl/{deviceId}/command</p>
+            <p>上报: chemctrl/{deviceId}/status</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 TCT_100 Project · 化工控制实训装置 · 嵌入式软件开发实践课程
+    </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TCT_100 技术规格 — 硬件参数、传感器指标、通信协议、引脚定义">
+    <title>技术规格 — TCT_100 化工控制实训装置</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ═══════════ 导航栏 ═══════════ -->
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+            <div class="logo-icon">⚗</div>
+            TCT_100
+        </a>
+        <button class="nav-toggle" id="navToggle" aria-label="菜单">☰</button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">产品说明</a></li>
+            <li><a href="specs.html" class="active">技术规格</a></li>
+            <li><a href="guide.html">使用指南</a></li>
+            <li><a href="about.html">关于项目</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ═══════════ 面包屑 ═══════════ -->
+<div class="breadcrumb">
+    <a href="index.html">首页</a> <span>›</span> 技术规格
+</div>
+
+<!-- ═══════════ Hero ═══════════ -->
+<header class="hero" style="padding: 48px 24px;">
+    <div class="hero-content">
+        <div class="hero-badge">Technical Specifications</div>
+        <h1>技术<span>规格</span></h1>
+        <p>TCT_100 化工控制实训装置完整硬件参数、传感器指标与通信协议</p>
+    </div>
+</header>
+
+<!-- ═══════════ 硬件规格 ═══════════ -->
+<section class="page-section">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>硬件规格</h2>
+            <p>装置核心硬件组件及参数一览</p>
+        </div>
+
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th style="width:30%">组件</th>
+                    <th style="width:25%">型号 / 规格</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="label">主控芯片</td>
+                    <td>ESP32-C3</td>
+                    <td>RISC-V 32位单核, 160MHz, 400KB SRAM, 4MB Flash, 集成 WiFi 4 + BLE 5.0</td>
+                </tr>
+                <tr>
+                    <td class="label">温度传感器</td>
+                    <td>DS18B20</td>
+                    <td>数字一线接口, 量程 -55°C ~ +125°C, 精度 ±0.5°C, 分辨率 9~12 位可调</td>
+                </tr>
+                <tr>
+                    <td class="label">光照传感器</td>
+                    <td>光敏电阻 LDR</td>
+                    <td>模拟输入, 12位ADC采样 (0~4095), 换算范围 0~1000 lux</td>
+                </tr>
+                <tr>
+                    <td class="label">RGB LED</td>
+                    <td>Adafruit NeoPixel (WS2812)</td>
+                    <td>单总线控制, 24位色深 (RGB各8位), 亮度可调 0~255</td>
+                </tr>
+                <tr>
+                    <td class="label">OLED 显示屏</td>
+                    <td>SH1106 128×64</td>
+                    <td>I²C 接口 (SDA=4, SCL=5), 单色白光, 支持中文显示 (GB2312字库)</td>
+                </tr>
+                <tr>
+                    <td class="label">继电器 ×4</td>
+                    <td>5V 电磁继电器</td>
+                    <td>GPIO2/3/6/7 驱动, 分别控制 relay1/relay2/灯光/风扇</td>
+                </tr>
+                <tr>
+                    <td class="label">按键 ×2</td>
+                    <td>KEY1 (GPIO20), KEY2 (GPIO21)</td>
+                    <td>KEY1: 总闸开关 (轮询检测), KEY2: 模式切换 (外部中断 + 长短按识别)</td>
+                </tr>
+                <tr>
+                    <td class="label">板载 LED</td>
+                    <td>GPIO9</td>
+                    <td>状态指示: 灯光或风扇任一开启时点亮</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ═══════════ 引脚定义 ═══════════ -->
+<section class="page-section alt">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>GPIO 引脚分配</h2>
+            <p>ESP32-C3 引脚功能定义</p>
+        </div>
+
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>GPIO</th>
+                    <th>功能</th>
+                    <th>方向</th>
+                    <th>备注</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="label">GPIO 0</td><td>RGB LED (NeoPixel)</td><td>OUT</td><td>单总线控制 WS2812</td></tr>
+                <tr><td class="label">GPIO 1</td><td>光敏电阻 LDR</td><td>IN (ADC)</td><td>模拟量采集 0~4095</td></tr>
+                <tr><td class="label">GPIO 2</td><td>继电器1 (relay1)</td><td>OUT</td><td>预留扩展</td></tr>
+                <tr><td class="label">GPIO 3</td><td>继电器2 (relay2)</td><td>OUT</td><td>预留扩展</td></tr>
+                <tr><td class="label">GPIO 4</td><td>I²C SDA</td><td>双向</td><td>OLED 数据线</td></tr>
+                <tr><td class="label">GPIO 5</td><td>I²C SCL</td><td>OUT</td><td>OLED 时钟线</td></tr>
+                <tr><td class="label">GPIO 6</td><td>灯光继电器</td><td>OUT</td><td>控制照明设备</td></tr>
+                <tr><td class="label">GPIO 7</td><td>风扇继电器</td><td>OUT</td><td>控制散热风扇</td></tr>
+                <tr><td class="label">GPIO 9</td><td>板载 LED</td><td>OUT</td><td>状态指示灯</td></tr>
+                <tr><td class="label">GPIO 10</td><td>DS18B20</td><td>双向</td><td>OneWire 数字温度</td></tr>
+                <tr><td class="label">GPIO 20</td><td>KEY1 总闸</td><td>IN</td><td>内部下拉, 轮询</td></tr>
+                <tr><td class="label">GPIO 21</td><td>KEY2 模式</td><td>IN (INT)</td><td>外部中断 RISING, 长短按</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- ═══════════ 通信协议 ═══════════ -->
+<section class="page-section">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>MQTT 通信协议</h2>
+            <p>远程监控与控制的数据交互规范</p>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon green">📤</div>
+                <h3>状态上报</h3>
+                <p><code>chemctrl/{deviceId}/status</code></p>
+                <p style="margin-top:8px; font-size:0.85rem; color:var(--text-light);">
+                    JSON: temperature, light, mode, key1_lock, relay3, relay4, temp_threshold, light_threshold
+                </p>
+                <p style="margin-top:4px; font-size:0.82rem; color:var(--text-light);">
+                    上报频率: 每5秒定期 + 状态变化即时
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon blue">📥</div>
+                <h3>命令订阅</h3>
+                <p><code>chemctrl/{deviceId}/command</code></p>
+                <p style="margin-top:8px; font-size:0.85rem; color:var(--text-light);">
+                    支持命令: set_relay, set_mode, get_status, set_threshold, reboot
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-icon orange">⚙️</div>
+                <h3>连接参数</h3>
+                <p>Broker: <code>47.98.170.180:8081</code></p>
+                <p>KeepAlive: 15s</p>
+                <p>ClientID: {deviceId}_{random}</p>
+                <p>QoS: 0 (最多一次)</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════ 传感器阈值 ═══════════ -->
+<section class="page-section alt">
+    <div class="section-inner">
+        <div class="section-header">
+            <h2>传感器阈值设定</h2>
+            <p>默认可动态调整的自动控制阈值（掉电保存于 Flash）</p>
+        </div>
+
+        <table class="spec-table">
+            <thead>
+                <tr>
+                    <th>参数</th>
+                    <th>默认值</th>
+                    <th>触发动作</th>
+                    <th>恢复条件</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="label">光照 ON 阈值</td>
+                    <td>&lt; 260 lux</td>
+                    <td>开启灯光</td>
+                    <td>光照 &gt; 360 lux (OFF阈值)</td>
+                </tr>
+                <tr>
+                    <td class="label">光照 OFF 阈值</td>
+                    <td>&gt; 360 lux</td>
+                    <td>关闭灯光</td>
+                    <td>光照 &lt; 260 lux (ON阈值)</td>
+                </tr>
+                <tr>
+                    <td class="label">温度 ON 阈值</td>
+                    <td>&gt; 30.5 °C</td>
+                    <td>开启风扇</td>
+                    <td>温度 &lt; 29.5 °C (OFF阈值)</td>
+                </tr>
+                <tr>
+                    <td class="label">温度 OFF 阈值</td>
+                    <td>&lt; 29.5 °C</td>
+                    <td>关闭风扇</td>
+                    <td>温度 &gt; 30.5 °C (ON阈值)</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="margin-top:16px; color:var(--text-light); font-size:0.88rem; text-align:center;">
+            💡 阈值均支持通过串口命令 <code>mqtt set threshold</code> 或 MQTT <code>set_threshold</code> 命令动态修改
+        </p>
+    </div>
+</section>
+
+<!-- ═══════════ 页脚 ═══════════ -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h4>TCT_100 化工控制实训装置</h4>
+            <p>版本: V1.0.0 | 型号: PCT_100_CTL</p>
+            <p>主控: ESP32-C3 (RISC-V)</p>
+        </div>
+        <div class="footer-col">
+            <h4>快速链接</h4>
+            <a href="index.html">产品说明</a>
+            <a href="specs.html">技术规格</a>
+            <a href="guide.html">使用指南</a>
+            <a href="about.html">关于项目</a>
+        </div>
+        <div class="footer-col">
+            <h4>开发信息</h4>
+            <p>框架: Arduino + FreeRTOS</p>
+            <p>通信: WiFi 2.4GHz + MQTT</p>
+            <p>协议: PubSubClient</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 TCT_100 Project · 化工控制实训装置
+    </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

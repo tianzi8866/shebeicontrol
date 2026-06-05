@@ -1,0 +1,25 @@
+# Arduino 编译产物
+build/
+*.bin
+*.elf
+*.map
+*.o
+*.d
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 临时文件
+*.tmp
+*.log
+
+# PPTX等教学资料（非网站内容）
+*.pptx
