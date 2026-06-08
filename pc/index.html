@@ -129,6 +129,9 @@ body{font-family:-apple-system,"Microsoft YaHei","PingFang SC",sans-serif;backgr
       <button class="net-btn active" id="netExtranet" onclick="switchNet('extranet')">🌐 外网</button>
       <button class="net-btn" id="netIntranet" onclick="switchNet('intranet')">🏠 内网</button>
     </div>
+    <span class="conn-status" id="devIndicator">
+      <span class="conn-dot off"></span><span class="conn-text off">设备离线</span>
+    </span>&nbsp;
     <span class="conn-status" id="mqttIndicator">
       <span class="conn-dot off"></span><span class="conn-text off">MQTT 未连接</span>
     </span>
@@ -198,6 +201,7 @@ body{font-family:-apple-system,"Microsoft YaHei","PingFang SC",sans-serif;backgr
 function $(id){return document.getElementById(id);}
 function api(){return window.pctAPI||null;}
 var g_autoMode=true;
+var g_lockOn=false;
 
 function addLog(e){var a=$('logArea');if(!a)return;var d=document.createElement('div');d.className='log-entry '+(e.type||'info');d.textContent=e.msg;a.appendChild(d);a.scrollTop=a.scrollHeight;while(a.children.length>100)a.firstChild.remove();}
 function safeNum(v,d){return(v!==undefined&&v!==null&&!isNaN(v))?v:d;}
@@ -227,20 +231,24 @@ function updateUI(s){
     if(lb)lb.style.width=Math.min(100,Math.max(0,(l||0)/1000*100))+'%';
     if(lt&&s.light_threshold!==undefined)lt.textContent=s.light_threshold;
 
-    // ★ 继电器动画 → 用 toBool 确保类型
-    setRelayUI(toBool(s.relay3),toBool(s.relay4));
-
-    // 总闸
+    // 总闸状态
+    var lockOn=toBool(s.key1_lock); g_lockOn=lockOn;
     var le=$('lockStatus');
-    if(le){if(toBool(s.key1_lock)){le.textContent='已合上';le.className='info-badge on';}else{le.textContent='已断开';le.className='info-badge off';}}
+    if(le){if(lockOn){le.textContent='已合上';le.className='info-badge on';}else{le.textContent='已断开';le.className='info-badge off';}}
+
+    // ★ 继电器动画 — 总闸断开时强制显示OFF
+    setRelayUI(lockOn && toBool(s.relay3), lockOn && toBool(s.relay4));
+
     // 模式
     g_autoMode=(s.mode!=='manual');
     var ba=$('btnAuto'),bm=$('btnManual'),mt=$('modeText'),mt2=$('modeText2');
     if(s.mode==='manual'){if(bm)bm.classList.add('active');if(ba)ba.classList.remove('active');if(mt)mt.textContent='手动';if(mt2)mt2.textContent='手动';}
     else{if(ba)ba.classList.add('active');if(bm)bm.classList.remove('active');if(mt)mt.textContent='自动';if(mt2)mt2.textContent='自动';}
+    // 开关禁用：自动模式 或 总闸断开
+    var disableSwitch = g_autoMode || !lockOn;
     var s3=$('relay3Switch'),s4=$('relay4Switch');
-    if(s3){s3.style.opacity=g_autoMode?'0.4':'1';s3.style.pointerEvents=g_autoMode?'none':'auto';}
-    if(s4){s4.style.opacity=g_autoMode?'0.4':'1';s4.style.pointerEvents=g_autoMode?'none':'auto';}
+    if(s3){s3.style.opacity=disableSwitch?'0.4':'1';s3.style.pointerEvents=disableSwitch?'none':'auto';}
+    if(s4){s4.style.opacity=disableSwitch?'0.4':'1';s4.style.pointerEvents=disableSwitch?'none':'auto';}
     var ti=$('tempOnInput'),li=$('lightOnInput');
     if(ti&&s.temp_threshold!==undefined&&document.activeElement!==ti)ti.value=s.temp_threshold;
     if(li&&s.light_threshold!==undefined&&document.activeElement!==li)li.value=s.light_threshold;
@@ -301,6 +309,7 @@ function saveNetConfig(){
 function toggleRelay(relay){
     var a=api();if(!a)return;
     if(g_autoMode){addLog({type:'error',msg:'⛔ 自动模式下禁止手动控制，请先切换到手动模式'});return;}
+    if(!g_lockOn){addLog({type:'error',msg:'⛔ 总闸已断开，请先合上总闸'});return;}
     var cb=$('relay'+(relay==3?3:4)+'Toggle');
     var cur=cb?cb.checked:false, nv=!cur;
     // 立即更新动画
@@ -317,6 +326,11 @@ window.addEventListener('DOMContentLoaded',function(){
     window.pctAPI.onDeviceStatus(updateUI);
     window.pctAPI.onMqttStatus(updateMqttStatus);
     window.pctAPI.onLog(addLog);
+    window.pctAPI.onDeviceOnline(function(online){
+        var ind=$('devIndicator');if(!ind)return;
+        if(online){ind.innerHTML='<span class="conn-dot on"></span><span class="conn-text on">设备在线</span>';}
+        else{ind.innerHTML='<span class="conn-dot off"></span><span class="conn-text off">设备离线</span>';}
+    });
     window.pctAPI.onNetworkChanged(function(d){addLog({type:'info',msg:'🔀 已切换到 ['+d.config.label+'] '+d.config.broker});});
     var di=$('deviceIdInput');if(di)di.addEventListener('keydown',function(e){if(e.key==='Enter'&&api()){api().setDeviceId(di.value.trim());addLog({type:'info',msg:'已切换设备: '+di.value.trim()});}});
     setTimeout(function(){var a=api();if(a)a.getStatus().then(function(d){if(d)updateUI(d);}).catch(function(e){addLog({type:'error',msg:'获取状态失败: '+e.message});});},800);
